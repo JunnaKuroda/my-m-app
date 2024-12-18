@@ -110,7 +110,13 @@ app.get('/get-orderer-name/:line_user_id', (req, res) => {
 });
 
 // --- サーバー起動 ---
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`サーバーが起動しました: http://localhost:${PORT}`);
+const PORT = process.env.PORT || 3000;
+// トップページの設定
+app.get('/', (req, res) => {
+  res.send('Hello, this is the homepage of your app!');
+});
+
+// サーバーの起動
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
