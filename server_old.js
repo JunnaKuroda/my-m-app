@@ -68,3 +68,21 @@ app.get('/orders', (req, res) => {
       }
   });
 });
+
+
+
+
+
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
+
+// トップページの設定
+app.get('/', (req, res) => {
+    res.send('Hello, this is the homepage of your app!');
+});
+
+// サーバーの起動
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
