@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="form.css">
+    <title>Order Form</title>
+</head>
+<body>
+  <div id="container">
+    <h1>Order Form</h1>
+    <h2>Golden Sack</h2>
+    <h3>Due by the third week of December</h3>
+    <form id="formB">
+        <label for="quantity_b">Quantity:</label>
+        <input type="number" id="quantity_b" min="0" value="0">
+        <br>
+        <button type="button" id="catalogButton">Back to Catalog</button>
+        <button type="submit">Send</button>
+    </form>
+  </div>
+
+    <script>
+        // カタログに戻るボタンの動作
+        document.getElementById('catalogButton').addEventListener('click', () => {
+            const quantityB = document.getElementById('quantity_b').value;
+            // 商品Bのデータをローカルストレージに保存
+            localStorage.setItem('quantity_b', quantityB);
+            // カタログページに戻る
+            window.location.href = 'catalog.html';
+        });
+
+        // 送信ボタンの動作
+        document.getElementById('formB').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const quantityB = document.getElementById('quantity_b').value;
+            localStorage.setItem('quantity_b', quantityB);
+
+            // 商品Aと商品Bのデータをまとめて送信
+            const orderData = {
+                sender: 'User',
+                quantity_a: localStorage.getItem('quantity_a') || 0,
+                quantity_b: localStorage.getItem('quantity_b') || 0,
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/submit-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData),
+                });
+                const result = await response.json();
+                console.log('サーバーからの応答:', result);
+                alert('注文が送信されました！');
+                localStorage.clear(); // データ送信後にローカルストレージをクリア
+                window.location.href = 'catalog.html'; // カタログページに戻る
+            } catch (error) {
+                console.error('エラー:', error);
+                alert('送信に失敗しました。');
+            }
+        });
+    </script>
+</body>
+</html>

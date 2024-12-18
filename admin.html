@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Management Panel</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <h1>Order Management Panel</h1>
+    <button id="clearButton">Clear Results</button>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Timestamp</th>
+                <th>Sender</th>
+                <th>Extra Bar Mild</th>
+                <th>Quantity Extra Bar Mild</th>
+                <th>Golden Sack</th>
+                <th>Quantity Golden Sack</th>
+            </tr>
+        </thead>
+        <tbody id="orderTable"></tbody>
+    </table>
+
+    <script>
+        // サーバーからデータを取得して表示
+        function loadOrders() {
+            fetch('http://localhost:3000/orders')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('orderTable');
+                    tableBody.innerHTML = ''; // テーブルをクリア
+                    data.forEach(order => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${order.id}</td>
+                            <td>${order.timestamp}</td>
+                            <td>${order.sender}</td>
+                            <td>${order.product_a}</td>
+                            <td>${order.quantity_a}</td>
+                            <td>${order.product_b}</td>
+                            <td>${order.quantity_b}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                });
+        }
+
+        // 初回ロード
+        loadOrders();
+
+        // 結果をクリアするボタンの動作
+        document.getElementById('clearButton').addEventListener('click', async () => {
+            const confirmation = confirm('本当にすべての結果をクリアしますか？');
+            if (confirmation) {
+                try {
+                    const response = await fetch('http://localhost:3000/clear-orders', { method: 'DELETE' });
+                    const result = await response.json();
+                    alert(result.message);
+                    loadOrders(); // テーブルをリロード
+                } catch (error) {
+                    console.error('エラー:', error);
+                    alert('結果をクリアできませんでした。');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="form.css">
+    <title>Order Form</title>
+</head>
+<body>
+  <div id="container">
+    <h1>c</h1>
+    <h2>Due by the third week of December</h2>
+    <form id="orderForm">
+        <!-- 商品A -->
+        <label for="quantity_a">Extra Bar Mild (商品A) 数量:</label>
+        <input type="number" id="quantity_a" name="quantity_a" min="0" value="0">
+        <br>
+        <!-- 商品B -->
+        <label for="quantity_b">Golden Sack (商品B) 数量:</label>
+        <input type="number" id="quantity_b" name="quantity_b" min="0" value="0">
+        <br>
+        <button type="submit">Send</button>
+    </form>
+  </div>
+
+    <script>
+        document.getElementById('orderForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // フォームデータを取得
+            const orderData = {
+                sender: 'User', // 必要に応じて変更
+                quantity_a: document.getElementById('quantity_a').value || 0,
+                quantity_b: document.getElementById('quantity_b').value || 0,
+            };
+
+            // サーバーにデータを送信
+            try {
+                const response = await fetch('http://localhost:3000/submit-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData),
+                });
+                const result = await response.json();
+                console.log('サーバーからの応答:', result);
+                alert('注文が送信されました！');
+            } catch (error) {
+                console.error('エラー:', error);
+                alert('送信に失敗しました。');
+            }
+        });
+    </script>
+</body>
+</html>
